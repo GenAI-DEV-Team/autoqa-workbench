@@ -13,6 +13,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { mockConversations } from "@/lib/mockData";
+import TruncateTooltip from "@/components/TruncateTooltip";
+import ExpandOnClick from "@/components/ExpandOnClick";
+import LabelChips from "@/components/LabelChips";
 
 const Conversations = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -175,9 +178,13 @@ const Conversations = () => {
                     onCheckedChange={() => toggleSelection(conv.id)}
                   />
                 </TableCell>
-                <TableCell className="font-mono text-sm">{conv.id}</TableCell>
-                <TableCell className="text-sm">{conv.botName}</TableCell>
-                <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
+                <TableCell className="font-mono text-sm">
+                  <TruncateTooltip text={conv.id} lines={1} />
+                </TableCell>
+                <TableCell className="text-sm">
+                  <TruncateTooltip text={conv.botName} lines={1} />
+                </TableCell>
+                <TableCell className="text-sm text-muted-foreground whitespace-nowrap" title={conv.date}>
                   {conv.date}
                 </TableCell>
                 <TableCell className="text-center">
@@ -186,17 +193,17 @@ const Conversations = () => {
                   </span>
                 </TableCell>
                 <TableCell className="max-w-xs">
-                  <p className="text-sm truncate">{conv.qaAnswer}</p>
+                  <ExpandOnClick 
+                    preview={conv.qaAnswer} 
+                    full={conv.qaAnswer}
+                    lines={2}
+                  />
                 </TableCell>
-                <TableCell>{getReviewBadge(conv.csReview)}</TableCell>
                 <TableCell>
-                  <div className="flex gap-1 flex-wrap">
-                    {conv.labels.map((label) => (
-                      <Badge key={label} variant="secondary" className="text-xs">
-                        {label}
-                      </Badge>
-                    ))}
-                  </div>
+                  {getReviewBadge(conv.csReview)}
+                </TableCell>
+                <TableCell>
+                  <LabelChips labels={conv.labels} max={2} />
                 </TableCell>
               </TableRow>
             ))}

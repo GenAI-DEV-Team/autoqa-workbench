@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { mockBots } from "@/lib/mockData";
+import TruncateTooltip from "@/components/TruncateTooltip";
+import LabelChips from "@/components/LabelChips";
 
 const BotGallery = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -62,23 +64,23 @@ const BotGallery = () => {
         {filteredBots.map((bot) => (
           <Card key={bot.id} className="group hover:shadow-lg transition-all duration-300 border-border hover:border-primary/30">
             <CardHeader className="space-y-3">
-              <div className="flex items-start justify-between">
-                <div className="space-y-1 flex-1">
-                  <h3 className="font-semibold text-lg leading-tight">{bot.name}</h3>
-                  <p className="text-sm text-muted-foreground font-mono">ID: {bot.id}</p>
+              <div className="flex items-start justify-between gap-2">
+                <div className="space-y-1 flex-1 min-w-0">
+                  <TruncateTooltip 
+                    text={bot.name} 
+                    lines={1}
+                    className="font-semibold text-lg leading-tight"
+                  />
+                  <p className="text-sm text-muted-foreground font-mono truncate" title={bot.id}>
+                    ID: {bot.id}
+                  </p>
                 </div>
                 <Badge className={getStatusColor(bot.status)} variant="outline">
                   {bot.status}
                 </Badge>
               </div>
               
-              <div className="flex flex-wrap gap-1.5">
-                {bot.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="text-xs">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
+              <LabelChips labels={bot.tags} max={2} />
             </CardHeader>
             
             <CardContent className="space-y-3 pb-4">
