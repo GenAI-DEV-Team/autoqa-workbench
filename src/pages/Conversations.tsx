@@ -12,15 +12,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { mockConversations } from "@/lib/mockData";
+import { mockConversations, Conversation } from "@/lib/mockData";
 import TruncateTooltip from "@/components/TruncateTooltip";
 import ExpandOnClick from "@/components/ExpandOnClick";
 import LabelChips from "@/components/LabelChips";
+import ConversationDrawer from "@/components/ConversationDrawer";
 
 const Conversations = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedConvs, setSelectedConvs] = useState<string[]>([]);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   
   const quickFilters = [
     { id: "policy-fail", label: "Policy: Fail", key: "policyPass", value: false },
@@ -87,8 +90,19 @@ const Conversations = () => {
     if (score >= 70) return "text-warning font-semibold";
     return "text-destructive font-semibold";
   };
+
+  const handleRowClick = (conv: Conversation) => {
+    setSelectedConversation(conv);
+    setDrawerOpen(true);
+  };
   
   return (
+    <>
+      <ConversationDrawer
+        conversation={selectedConversation}
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+      />
     <div className="container py-6 px-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
@@ -171,6 +185,7 @@ const Conversations = () => {
               <TableRow
                 key={conv.id}
                 className="cursor-pointer hover:bg-muted/30 transition-colors"
+                onClick={() => handleRowClick(conv)}
               >
                 <TableCell onClick={(e) => e.stopPropagation()}>
                   <Checkbox
@@ -216,7 +231,8 @@ const Conversations = () => {
           <p className="text-muted-foreground">No conversations found matching your criteria.</p>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 };
 
